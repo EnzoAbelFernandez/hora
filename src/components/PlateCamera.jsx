@@ -167,16 +167,16 @@ export default function PlateCamera({ onPlateSuggested, activeVehicles, settings
 
       {cameraError && (
         <div style={{ 
-          background: 'rgba(239, 68, 68, 0.1)', 
-          border: '1px solid rgba(239, 68, 68, 0.2)', 
-          padding: '0.5rem 0.75rem', 
+          background: '#FEF2F2', 
+          border: '1px solid #FECACA', 
+          padding: '12px', 
           borderRadius: '8px', 
           color: 'var(--accent-red)',
-          fontSize: '0.75rem',
-          marginBottom: '1rem',
+          fontSize: '0.875rem',
+          marginBottom: '16px',
           display: 'flex',
           alignItems: 'center',
-          gap: '0.5rem'
+          gap: '8px'
         }}>
           <AlertCircle style={{ width: 14, height: 14, flexShrink: 0 }} />
           <span>{cameraError}</span>

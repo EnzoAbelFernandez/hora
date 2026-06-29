@@ -330,10 +330,10 @@ export default function TariffSettings({ settings, onSaveSettings }) {
               <form onSubmit={handleAddVehicleType} style={{ 
                 border: '1px solid var(--border-color)', 
                 borderRadius: '12px', 
-                padding: '1.25rem',
-                background: 'rgba(255,255,255,0.01)'
+                padding: '20px',
+                background: '#F9FAFB'
               }}>
-                <h3 style={{ fontSize: '0.95rem', fontWeight: 600, marginBottom: '1rem', display: 'flex', alignItems: 'center', gap: '0.5rem' }}>
+                <h3 style={{ fontSize: '0.95rem', fontWeight: 600, marginBottom: '16px', display: 'flex', alignItems: 'center', gap: '8px' }}>
                   <Plus style={{ width: 16, height: 16, color: 'var(--accent-blue)' }} />
                   Crear Nuevo Tipo de Vehículo
                 </h3>
@@ -396,14 +396,14 @@ export default function TariffSettings({ settings, onSaveSettings }) {
 
               {localSettings.rates.commercial.active && (
                 <div style={{ 
-                  background: 'rgba(255,255,255,0.01)',
+                  background: '#F9FAFB',
                   border: '1px solid var(--border-color)',
                   borderRadius: '12px',
-                  padding: '1.25rem',
-                  marginBottom: '1.5rem',
+                  padding: '20px',
+                  marginBottom: '24px',
                   display: 'grid',
                   gridTemplateColumns: '1fr 1fr',
-                  gap: '1rem',
+                  gap: '16px',
                   animation: 'slideUp 0.2s ease'
                 }}>
                   <div className="form-group">
@@ -467,13 +467,13 @@ export default function TariffSettings({ settings, onSaveSettings }) {
 
               {localSettings.rates.dynamic.active && (
                 <div style={{ 
-                  background: 'rgba(255,255,255,0.01)',
+                  background: '#F9FAFB',
                   border: '1px solid var(--border-color)',
                   borderRadius: '12px',
-                  padding: '1.25rem',
+                  padding: '20px',
                   display: 'grid',
                   gridTemplateColumns: '1fr 1fr',
-                  gap: '1rem',
+                  gap: '16px',
                   animation: 'slideUp 0.2s ease'
                 }}>
                   <div className="form-group">
@@ -533,13 +533,13 @@ export default function TariffSettings({ settings, onSaveSettings }) {
               </div>
 
               <div style={{ 
-                background: 'rgba(255,255,255,0.01)',
+                background: '#F9FAFB',
                 border: '1px solid var(--border-color)',
                 borderRadius: '12px',
-                padding: '1.5rem',
+                padding: '24px',
                 display: 'flex',
                 flexDirection: 'column',
-                gap: '1.25rem',
+                gap: '20px',
                 animation: 'slideUp 0.2s ease'
               }}>
                 <div className="form-group" style={{ marginBottom: 0 }}>

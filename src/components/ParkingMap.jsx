@@ -117,16 +117,16 @@ export default function ParkingMap({ slots, activeVehicles, onSaveSlots, onSelec
 
       {error && (
         <div style={{ 
-          background: 'rgba(239, 68, 68, 0.1)', 
-          border: '1px solid rgba(239, 68, 68, 0.2)', 
-          padding: '0.75rem', 
+          background: '#FEF2F2', 
+          border: '1px solid #FECACA', 
+          padding: '12px', 
           borderRadius: '8px', 
           color: 'var(--accent-red)',
           fontSize: '0.875rem',
-          marginBottom: '1rem',
+          marginBottom: '16px',
           display: 'flex',
           alignItems: 'center',
-          gap: '0.5rem'
+          gap: '8px'
         }}>
           <ShieldAlert style={{ width: 18, height: 18 }} />
           <span>{error}</span>
@@ -235,11 +235,11 @@ export default function ParkingMap({ slots, activeVehicles, onSaveSlots, onSelec
       )}
 
       {!isEditing && (
-        <div style={{ marginTop: '1rem', display: 'flex', alignItems: 'center', gap: '0.5rem', color: 'var(--text-secondary)', fontSize: '0.85rem' }}>
-          <div style={{ width: 12, height: 12, borderRadius: '3px', background: 'rgba(239, 68, 68, 0.2)', border: '1px solid var(--accent-red)' }} />
+        <div style={{ marginTop: '16px', display: 'flex', alignItems: 'center', gap: '8px', color: 'var(--text-secondary)', fontSize: '0.875rem' }}>
+          <div style={{ width: 12, height: 12, borderRadius: '2px', background: '#FEF2F2', border: '1px solid var(--accent-red)' }} />
           <span>Rojo = Ocupado (Click para facturar/liberar)</span>
-          <div style={{ width: 12, height: 12, borderRadius: '3px', background: 'rgba(15, 22, 38, 0.6)', border: '2px dashed rgba(255, 255, 255, 0.1)', marginLeft: '1rem' }} />
-          <span>Gris = Disponible (Click para asignar a próximo ingreso)</span>
+          <div style={{ width: 12, height: 12, borderRadius: '2px', background: '#FFFFFF', border: '1px solid var(--border-color)', marginLeft: '16px' }} />
+          <span>Blanco = Disponible (Click para asignar a próximo ingreso)</span>
         </div>
       )}
     </div>

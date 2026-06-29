@@ -252,7 +252,7 @@ export default function App() {
         </nav>
 
         <div className="sidebar-footer">
-          <div style={{ width: 36, height: 36, borderRadius: '50%', background: 'rgba(59, 130, 246, 0.1)', display: 'flex', alignItems: 'center', justify: 'center' }}>
+          <div style={{ width: 36, height: 36, borderRadius: '50%', background: '#EFF6FF', display: 'flex', alignItems: 'center', justify: 'center' }}>
             <ShieldCheck style={{ color: 'var(--accent-blue)', width: 20, height: 20 }} />
           </div>
           <div className="user-info">
@@ -292,7 +292,7 @@ export default function App() {
         {suggestedPlate && (
           <div className="patente-suggestion-card">
             <div className="suggestion-content">
-              <div style={{ width: 40, height: 40, borderRadius: '50%', background: 'rgba(16, 185, 129, 0.15)', display: 'flex', alignItems: 'center', justify: 'center' }}>
+              <div style={{ width: 40, height: 40, borderRadius: '50%', background: '#ECFDF5', display: 'flex', alignItems: 'center', justify: 'center' }}>
                 <Clock style={{ color: 'var(--accent-green)', width: 22, height: 22 }} />
               </div>
               <div>

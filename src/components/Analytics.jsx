@@ -262,7 +262,7 @@ export default function Analytics({ analytics, history, onResetAll }) {
       </div>
 
       {/* Danger Zone */}
-      <div className="glass-panel" style={{ border: '1px solid rgba(239, 68, 68, 0.25)', background: 'rgba(239, 68, 68, 0.03)' }}>
+      <div className="glass-panel" style={{ border: '1px solid #FECACA', background: '#FEF2F2' }}>
         <h3 style={{ fontSize: '1.05rem', fontWeight: 600, color: 'var(--accent-red)', marginBottom: '0.5rem', display: 'flex', alignItems: 'center', gap: '0.5rem' }}>
           <Trash2 style={{ width: 18, height: 18 }} />
           Zona de Peligro

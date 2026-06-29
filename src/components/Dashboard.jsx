@@ -119,13 +119,13 @@ export default function Dashboard({
 
         {formError && (
           <div style={{ 
-            background: 'rgba(239, 68, 68, 0.1)', 
-            border: '1px solid rgba(239, 68, 68, 0.2)', 
-            padding: '0.75rem', 
-            borderRadius: '8px', 
+            background: '#FEF2F2', 
+            border: '1px solid #FECACA', 
+            padding: '12px', 
+            borderRadius: '6px', 
             color: 'var(--accent-red)',
-            fontSize: '0.85rem',
-            marginBottom: '1rem'
+            fontSize: '0.875rem',
+            marginBottom: '16px'
           }}>
             {formError}
           </div>
@@ -264,8 +264,8 @@ export default function Dashboard({
                     </span>
                   </div>
 
-                  <div className="vehicle-detail-row" style={{ marginTop: '0.25rem', borderTop: '1px solid rgba(255,255,255,0.04)', paddingTop: '0.5rem' }}>
-                    <span style={{ display: 'flex', alignItems: 'center', gap: '0.25rem' }}>
+                  <div className="vehicle-detail-row" style={{ marginTop: '8px', borderTop: '1px solid var(--border-color)', paddingTop: '12px' }}>
+                    <span style={{ display: 'flex', alignItems: 'center', gap: '4px' }}>
                       <DollarSign style={{ width: 14, height: 14 }} /> Acumulado:
                     </span>
                     <span className="live-cost-badge">
@@ -282,14 +282,14 @@ export default function Dashboard({
 
                   {vehicle.notes && (
                     <div style={{ 
-                      marginTop: '0.5rem', 
-                      background: 'rgba(255,255,255,0.02)', 
-                      padding: '0.4rem 0.6rem', 
+                      marginTop: '12px', 
+                      background: '#F9FAFB', 
+                      padding: '8px 12px', 
                       borderRadius: '6px', 
                       fontSize: '0.75rem', 
                       color: 'var(--text-secondary)',
                       display: 'flex',
-                      gap: '0.35rem',
+                      gap: '8px',
                       alignItems: 'flex-start',
                       border: '1px solid var(--border-color)'
                     }}>
@@ -303,7 +303,7 @@ export default function Dashboard({
                   <button 
                     onClick={() => onTriggerCheckout(vehicle)} 
                     className="btn btn-success"
-                    style={{ padding: '0.50rem 0.75rem', fontSize: '0.85rem', display: 'flex', gap: '0.35rem' }}
+                    style={{ padding: '8px 12px', fontSize: '0.875rem', display: 'flex', gap: '6px' }}
                   >
                     <CheckCircle style={{ width: 16, height: 16 }} />
                     Cobrar y Liberar
