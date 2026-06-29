@@ -7,7 +7,7 @@
 // Default settings
 const DEFAULT_SETTINGS = {
   general: {
-    useMap: true,
+    useMap: false,
     useCamera: false,
     ocrIntervalSeconds: 2,
     toleranceMinutes: 10,
