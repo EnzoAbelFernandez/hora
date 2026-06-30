@@ -9,6 +9,7 @@ const DEFAULT_SETTINGS = {
   general: {
     useMap: false,
     useCamera: false,
+    useSubscribers: false,
     ocrIntervalSeconds: 2,
     toleranceMinutes: 10,
     billingType: 'fraction', // 'fraction' | 'hourly'
@@ -93,6 +94,44 @@ export const dbService = {
   saveSettings(settings) {
     setLS('parking_settings', settings);
     return settings;
+  },
+
+  // --- SUBSCRIBERS (ABONADOS MENSUALES) ---
+  getSubscribers() {
+    return getLS('parking_subscribers', []);
+  },
+
+  saveSubscribers(subscribers) {
+    setLS('parking_subscribers', subscribers);
+    return subscribers;
+  },
+
+  addSubscriber(subscriberData) {
+    const subscribers = this.getSubscribers();
+    const newSub = {
+      id: Math.random().toString(36).substring(2, 9),
+      ...subscriberData
+    };
+    subscribers.push(newSub);
+    this.saveSubscribers(subscribers);
+    return newSub;
+  },
+
+  updateSubscriber(id, updatedData) {
+    let subscribers = this.getSubscribers();
+    const index = subscribers.findIndex(s => s.id === id);
+    if (index !== -1) {
+      subscribers[index] = { ...subscribers[index], ...updatedData };
+      this.saveSubscribers(subscribers);
+      return subscribers[index];
+    }
+    return null;
+  },
+
+  deleteSubscriber(id) {
+    let subscribers = this.getSubscribers();
+    subscribers = subscribers.filter(s => s.id !== id);
+    this.saveSubscribers(subscribers);
   },
 
   // --- VEHICLE TYPES ---
@@ -272,6 +311,7 @@ export const dbService = {
     localStorage.removeItem('parking_active_vehicles');
     localStorage.removeItem('parking_slots');
     localStorage.removeItem('parking_history');
+    localStorage.removeItem('parking_subscribers');
     return { success: true };
   }
 };

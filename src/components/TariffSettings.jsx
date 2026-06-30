@@ -1,8 +1,8 @@
 import React, { useState } from 'react';
-import { Save, Plus, Trash2, Settings, DollarSign, Clock, Users, ArrowUpRight, Printer } from 'lucide-react';
+import { Save, Plus, Trash2, Settings, DollarSign, Clock, Users, ArrowUpRight, Printer, ToggleLeft } from 'lucide-react';
 
 export default function TariffSettings({ settings, onSaveSettings }) {
-  const [activeTab, setActiveTab] = useState('general');
+  const [activeTab, setActiveTab] = useState('modules');
   const [localSettings, setLocalSettings] = useState(settings);
   const [newVehicleName, setNewVehicleName] = useState('');
   const [newVehicleRate, setNewVehicleRate] = useState('');
@@ -126,11 +126,18 @@ export default function TariffSettings({ settings, onSaveSettings }) {
         {/* Left Side Tab Menu */}
         <ul className="settings-menu">
           <li 
+            className={`settings-menu-item ${activeTab === 'modules' ? 'active' : ''}`}
+            onClick={() => setActiveTab('modules')}
+          >
+            <ToggleLeft style={{ width: 18, height: 18 }} />
+            Módulos y Funciones
+          </li>
+          <li 
             className={`settings-menu-item ${activeTab === 'general' ? 'active' : ''}`}
             onClick={() => setActiveTab('general')}
           >
             <Clock style={{ width: 18, height: 18 }} />
-            Reglas Generales
+            Reglas de Cobro
           </li>
           <li 
             className={`settings-menu-item ${activeTab === 'vehicles' ? 'active' : ''}`}
@@ -157,11 +164,11 @@ export default function TariffSettings({ settings, onSaveSettings }) {
 
         {/* Right Side Content Panel */}
         <div style={{ flex: 1 }}>
-          {activeTab === 'general' && (
+          {activeTab === 'modules' && (
             <div>
               <div className="settings-panel-header">
-                <h2>Reglas Generales de Facturación</h2>
-                <p>Establece la capacidad máxima del estacionamiento y las políticas de tolerancia o cobro fraccionado.</p>
+                <h2>Módulos y Funciones Activas</h2>
+                <p>Habilita o deshabilita los componentes avanzados de la aplicación según las necesidades de tu estacionamiento.</p>
               </div>
 
               <div className="switch-container" style={{ marginBottom: '1.5rem' }}>
@@ -194,6 +201,21 @@ export default function TariffSettings({ settings, onSaveSettings }) {
                 </label>
               </div>
 
+              <div className="switch-container" style={{ marginBottom: '1.5rem' }}>
+                <div className="switch-label-desc">
+                  <span className="switch-title">Habilitar Módulo de Abonados (Mensualidad)</span>
+                  <span className="switch-desc">Activa una pestaña para gestionar clientes con pagos fijos adelantados.</span>
+                </div>
+                <label className="switch-toggle">
+                  <input 
+                    type="checkbox" 
+                    checked={localSettings.general.useSubscribers || false} 
+                    onChange={(e) => handleChange('general', 'useSubscribers', e.target.checked)} 
+                  />
+                  <span className="switch-slider"></span>
+                </label>
+              </div>
+
               <div className="form-group">
                 <label className="form-label">Velocidad de Escaneo de IA (Segundos)</label>
                 <div style={{ display: 'flex', alignItems: 'center', gap: '1rem' }}>
@@ -213,6 +235,15 @@ export default function TariffSettings({ settings, onSaveSettings }) {
                 <p style={{ color: 'var(--text-muted)', fontSize: '0.75rem', marginTop: '0.25rem' }}>
                   Determina cada cuántos segundos la IA lee el video. Un número menor es más rápido pero consume más recursos de CPU.
                 </p>
+              </div>
+            </div>
+          )}
+
+          {activeTab === 'general' && (
+            <div>
+              <div className="settings-panel-header">
+                <h2>Reglas de Facturación y Capacidad</h2>
+                <p>Establece la capacidad máxima del estacionamiento y las políticas de tolerancia o cobro fraccionado.</p>
               </div>
 
               <div className="form-group">

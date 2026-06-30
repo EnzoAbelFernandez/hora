@@ -12,7 +12,8 @@ export default function Dashboard({
   onSelectSlot,
   occupancyPercent,
   externalPlate,
-  onClearExternalPlate
+  onClearExternalPlate,
+  subscribers = []
 }) {
   const [plate, setPlate] = useState('');
   const [vehicleTypeId, setVehicleTypeId] = useState('auto');
@@ -108,6 +109,12 @@ export default function Dashboard({
   // List of vacant slots
   const vacantSlots = slots.filter(s => !s.occupiedBy);
 
+  // Check if current input plate is subscriber
+  const inputSubscriber = subscribers.find(s => 
+    s.plate.toUpperCase() === plate.toUpperCase()
+  );
+  const isInputSubscriberActive = inputSubscriber && (new Date(inputSubscriber.validUntil).setHours(23, 59, 59, 999) >= new Date().getTime());
+
   return (
     <div className="dashboard-layout">
       {/* Left Column: Register entry form */}
@@ -134,15 +141,33 @@ export default function Dashboard({
         <form onSubmit={handleSubmit} style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(200px, 1fr))', gap: '1rem', alignItems: 'end' }}>
           {/* Patente */}
           <div className="form-group" style={{ marginBottom: 0, position: 'relative' }}>
-            <label className="form-label" style={{ display: 'flex', justifyContent: 'space-between' }}>
-              <span>Patente (Argentina)</span>
+            <label className="form-label" style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+              <span style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
+                Patente
+                {inputSubscriber && (
+                  <span style={{ 
+                    padding: '2px 6px', 
+                    borderRadius: '4px', 
+                    fontSize: '0.65rem', 
+                    fontWeight: 600,
+                    display: 'inline-flex',
+                    alignItems: 'center',
+                    gap: '2px',
+                    background: isInputSubscriberActive ? 'rgba(16, 185, 129, 0.1)' : 'rgba(239, 68, 68, 0.1)',
+                    color: isInputSubscriberActive ? 'var(--accent-green)' : 'var(--accent-red)'
+                  }}>
+                    <CheckCircle style={{ width: 10, height: 10 }} />
+                    {isInputSubscriberActive ? 'Abonado' : 'Vencido'}
+                  </span>
+                )}
+              </span>
               {plate && <strong style={{ color: 'var(--text-secondary)' }}>{formatPlate(plate)}</strong>}
             </label>
             <input 
               type="text"
               value={plate}
               onChange={handlePlateChange}
-              placeholder="Ej: AA123BB o AAA123"
+              placeholder="Ej: AA123BB"
               className="form-input plate-input-field"
               maxLength={7}
               style={{ height: '42px' }}
@@ -238,6 +263,12 @@ export default function Dashboard({
             // Get Vehicle Type Name
             const typeInfo = settings.vehicleTypes.find(v => v.id === vehicle.vehicleTypeId) || { name: vehicle.vehicleTypeId };
 
+            // Check if active subscriber
+            const subscriber = subscribers.find(s => 
+              s.plate.toUpperCase() === vehicle.plate.toUpperCase() && 
+              new Date(s.validUntil).setHours(23, 59, 59, 999) >= new Date().getTime()
+            );
+
             return (
               <div key={vehicle.id} className="glass-panel vehicle-card">
                 <div className="vehicle-card-header">
@@ -268,9 +299,15 @@ export default function Dashboard({
                     <span style={{ display: 'flex', alignItems: 'center', gap: '4px' }}>
                       <DollarSign style={{ width: 14, height: 14 }} /> Acumulado:
                     </span>
-                    <span className="live-cost-badge">
-                      ${feeInfo.totalFee}
-                    </span>
+                    {subscriber ? (
+                      <span className="live-cost-badge" style={{ background: 'rgba(16, 185, 129, 0.1)', color: 'var(--accent-green)', borderColor: 'rgba(16, 185, 129, 0.2)' }}>
+                        Abonado ($0)
+                      </span>
+                    ) : (
+                      <span className="live-cost-badge">
+                        ${feeInfo.totalFee}
+                      </span>
+                    )}
                   </div>
 
                   {vehicle.slotId && settings.general.useMap !== false && (
@@ -306,7 +343,7 @@ export default function Dashboard({
                     style={{ padding: '8px 12px', fontSize: '0.875rem', display: 'flex', gap: '6px' }}
                   >
                     <CheckCircle style={{ width: 16, height: 16 }} />
-                    Cobrar y Liberar
+                    {subscriber ? 'Liberar Abonado' : 'Cobrar y Liberar'}
                   </button>
                 </div>
               </div>

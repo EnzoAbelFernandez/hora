@@ -11,7 +11,8 @@ import {
   Grid,
   ShieldCheck,
   Check,
-  Camera
+  Camera,
+  Users
 } from 'lucide-react';
 import { dbService } from './services/dbService';
 import { calculateParkingFee, formatElapsedTime } from './utils/tariffUtils';
@@ -22,6 +23,7 @@ import PlateCamera from './components/PlateCamera';
 import TariffSettings from './components/TariffSettings';
 import Analytics from './components/Analytics';
 import Ticket from './components/Ticket';
+import Subscribers from './components/Subscribers';
 import { useReactToPrint } from 'react-to-print';
 
 export default function App() {
@@ -34,6 +36,7 @@ export default function App() {
   const [slots, setSlots] = useState(dbService.getSlots());
   const [history, setHistory] = useState(dbService.getHistory());
   const [analytics, setAnalytics] = useState(dbService.getAnalytics());
+  const [subscribers, setSubscribers] = useState(dbService.getSubscribers());
   
   // Interactions States
   const [selectedSlotId, setSelectedSlotId] = useState(null);
@@ -42,6 +45,7 @@ export default function App() {
   const [checkoutNotes, setCheckoutNotes] = useState('');
   const [suggestedPlate, setSuggestedPlate] = useState(null);
   const [dashboardPlate, setDashboardPlate] = useState('');
+  const [shouldPrint, setShouldPrint] = useState(true);
   const [realTime, setRealTime] = useState(new Date());
 
   // Ref for the Ticket component
@@ -59,6 +63,7 @@ export default function App() {
     setSlots(dbService.getSlots());
     setHistory(dbService.getHistory());
     setAnalytics(dbService.getAnalytics());
+    setSubscribers(dbService.getSubscribers());
   };
 
   // Add Vehicle
@@ -178,13 +183,32 @@ export default function App() {
   let checkoutVehicleType = null;
   if (checkoutVehicle) {
     checkoutEntryDate = new Date(checkoutVehicle.entryTime);
-    checkoutFeeDetails = calculateParkingFee(
+    
+    // Check if the vehicle belongs to an active subscriber
+    const subscriber = subscribers.find(s => 
+      s.plate.toUpperCase() === checkoutVehicle.plate.toUpperCase() && 
+      new Date(s.validUntil).setHours(23, 59, 59, 999) >= new Date().getTime()
+    );
+
+    const normalFeeDetails = calculateParkingFee(
       checkoutVehicle.entryTime, 
       checkoutExitDate.toISOString(), 
       settings, 
       analytics.occupancyPercent, 
       checkoutVehicle.vehicleTypeId
     );
+
+    if (subscriber) {
+      checkoutFeeDetails = {
+        ...normalFeeDetails,
+        totalFee: 0,
+        billingType: 'abonado',
+        effectiveRate: 0
+      };
+    } else {
+      checkoutFeeDetails = normalFeeDetails;
+    }
+    
     checkoutVehicleType = settings.vehicleTypes.find(v => v.id === checkoutVehicle.vehicleTypeId) || { name: checkoutVehicle.vehicleTypeId };
   }
 
@@ -230,6 +254,17 @@ export default function App() {
                 </a>
               </li>
             )}
+            {settings.general.useSubscribers === true && (
+              <li className="nav-item">
+                <a 
+                  onClick={() => setCurrentTab('subscribers')} 
+                  className={`nav-link ${currentTab === 'subscribers' ? 'active' : ''}`}
+                >
+                  <Users className="nav-icon" />
+                  <span>Abonados</span>
+                </a>
+              </li>
+            )}
             <li className="nav-item">
               <a 
                 onClick={() => setCurrentTab('settings')} 
@@ -270,10 +305,10 @@ export default function App() {
         <header className="top-header">
           <div className="page-title-section">
             <h1 style={{ textTransform: 'capitalize' }}>
-              {currentTab === 'dashboard' ? 'Control de Estacionamiento' : currentTab === 'camera' ? 'Lector de Patentes IA' : currentTab === 'map' ? 'Diseñador de Plazas' : currentTab === 'settings' ? 'Reglas y Tarifas' : 'Analíticas y Caja'}
+              {currentTab === 'dashboard' ? 'Control de Estacionamiento' : currentTab === 'camera' ? 'Lector de Patentes IA' : currentTab === 'map' ? 'Diseñador de Plazas' : currentTab === 'subscribers' ? 'Abonados Mensuales' : currentTab === 'settings' ? 'Reglas y Tarifas' : 'Analíticas y Caja'}
             </h1>
             <p>
-              {currentTab === 'dashboard' ? 'Visualiza vehículos activos, registra ingresos y procesa egresos.' : currentTab === 'camera' ? 'Escaneo automático de patentes mediante cámara en vivo.' : currentTab === 'map' ? 'Administra el croquis físico de estacionamiento.' : currentTab === 'settings' ? 'Define el cobro comercial, dinámico y fraccionado.' : 'Revisa el flujo de caja, distribución de pagos y exporta reportes.'}
+              {currentTab === 'dashboard' ? 'Visualiza vehículos activos, registra ingresos y procesa egresos.' : currentTab === 'camera' ? 'Escaneo automático de patentes mediante cámara en vivo.' : currentTab === 'map' ? 'Administra el croquis físico de estacionamiento.' : currentTab === 'subscribers' ? 'Gestiona pagos fijos adelantados y clientes habituales.' : currentTab === 'settings' ? 'Define el cobro comercial, dinámico y fraccionado.' : 'Revisa el flujo de caja, distribución de pagos y exporta reportes.'}
             </p>
           </div>
           
@@ -336,6 +371,7 @@ export default function App() {
               occupancyPercent={analytics.occupancyPercent}
               externalPlate={dashboardPlate}
               onClearExternalPlate={() => setDashboardPlate('')}
+              subscribers={subscribers}
             />
             {/* Right stacked helper widgets (Map preview) */}
             {settings.general.useMap !== false && (
@@ -353,8 +389,8 @@ export default function App() {
           </div>
         )}
 
-        {currentTab === 'camera' && settings.general.useCamera === true && (
-          <div style={{ maxWidth: '800px', margin: '0 auto' }}>
+        {settings.general.useCamera === true && (
+          <div style={{ maxWidth: '800px', margin: '0 auto', display: currentTab === 'camera' ? 'block' : 'none' }}>
             <PlateCamera 
               onPlateSuggested={setSuggestedPlate}
               activeVehicles={activeVehicles}
@@ -371,6 +407,13 @@ export default function App() {
             onSelectSlot={setSelectedSlotId}
             selectedSlotId={selectedSlotId}
             onViewCheckout={handleTriggerCheckout}
+          />
+        )}
+
+        {currentTab === 'subscribers' && settings.general.useSubscribers !== false && (
+          <Subscribers 
+            subscribers={subscribers}
+            onUpdate={() => syncState()}
           />
         )}
 
@@ -457,6 +500,17 @@ export default function App() {
                   className="form-input"
                 />
               </div>
+              <div className="form-group" style={{ marginBottom: '1rem', marginTop: '1rem' }}>
+                <label style={{ display: 'flex', alignItems: 'center', gap: '0.5rem', fontSize: '0.875rem', cursor: 'pointer' }}>
+                  <input 
+                    type="checkbox" 
+                    checked={shouldPrint} 
+                    onChange={e => setShouldPrint(e.target.checked)} 
+                    style={{ accentColor: 'var(--accent-blue)', width: '16px', height: '16px' }}
+                  />
+                  Imprimir ticket físico de comprobante
+                </label>
+              </div>
             </div>
 
             <div className="modal-footer">
@@ -469,12 +523,12 @@ export default function App() {
               </button>
               
               <button 
-                onClick={handlePrint} 
+                onClick={shouldPrint ? handlePrint : handleConfirmCheckout} 
                 className="btn btn-success"
                 style={{ width: 'auto', display: 'flex', gap: '0.5rem' }}
               >
-                <Printer style={{ width: 18, height: 18 }} />
-                Registrar Pago e Imprimir
+                {shouldPrint ? <Printer style={{ width: 18, height: 18 }} /> : <Check style={{ width: 18, height: 18 }} />}
+                {shouldPrint ? 'Registrar Salida e Imprimir' : 'Registrar Salida'}
               </button>
             </div>
           </div>

@@ -6,7 +6,7 @@ export default function PlateCamera({ onPlateSuggested, activeVehicles, settings
   const [useRealCamera, setUseRealCamera] = useState(false);
   const [cameraError, setCameraError] = useState(null);
   const [ocrStatus, setOcrStatus] = useState('idle'); // idle | initializing | scanning
-  
+
   const videoRef = useRef(null);
   const streamRef = useRef(null);
   const canvasRef = useRef(null);
@@ -72,12 +72,12 @@ export default function PlateCamera({ onPlateSuggested, activeVehicles, settings
     const newFormatRegex = /[A-Z]{2}[\s-]*\d{3}[\s-]*[A-Z]{2}/gi;
 
     let matches = [...(text.match(newFormatRegex) || []), ...(text.match(oldFormatRegex) || [])];
-    
+
     if (matches.length > 0) {
       const rawPlate = matches[0].toUpperCase().replace(/[\s-]/g, '');
-      
+
       const activePlates = activeVehicles.map(v => v.plate.toUpperCase());
-      
+
       if (!activePlates.includes(rawPlate) && rawPlate !== lastSuggestedPlateRef.current) {
         lastSuggestedPlateRef.current = rawPlate;
         onPlateSuggested(rawPlate);
@@ -94,19 +94,19 @@ export default function PlateCamera({ onPlateSuggested, activeVehicles, settings
 
   const startOcrLoop = () => {
     setOcrStatus('scanning');
-    
+
     ocrIntervalRef.current = setInterval(async () => {
       if (!videoRef.current || !canvasRef.current || !workerRef.current) return;
-      
+
       const video = videoRef.current;
       const canvas = canvasRef.current;
-      
+
       if (video.readyState === video.HAVE_ENOUGH_DATA) {
         canvas.width = video.videoWidth;
         canvas.height = video.videoHeight;
         const ctx = canvas.getContext('2d', { willReadFrequently: true });
         ctx.drawImage(video, 0, 0, canvas.width, canvas.height);
-        
+
         try {
           const { data: { text } } = await workerRef.current.recognize(canvas);
           processOcrText(text);
@@ -154,23 +154,23 @@ export default function PlateCamera({ onPlateSuggested, activeVehicles, settings
           </p>
         </div>
         <div style={{ display: 'flex', gap: '0.5rem' }}>
-          <button 
-            onClick={() => setUseRealCamera(!useRealCamera)} 
+          <button
+            onClick={() => setUseRealCamera(!useRealCamera)}
             className={`btn btn-secondary ${useRealCamera ? 'active' : ''}`}
             style={{ width: 'auto', padding: '0.35rem 0.75rem', fontSize: '0.75rem', display: 'flex', gap: '0.25rem', height: '32px' }}
           >
             {useRealCamera ? <CameraOff style={{ width: 14, height: 14 }} /> : <Camera style={{ width: 14, height: 14 }} />}
-            {useRealCamera ? 'Apagar Webcam' : 'Usar Webcam'}
+            {useRealCamera ? 'Apagar Cámara' : 'Usar Cámara'}
           </button>
         </div>
       </div>
 
       {cameraError && (
-        <div style={{ 
-          background: '#FEF2F2', 
-          border: '1px solid #FECACA', 
-          padding: '12px', 
-          borderRadius: '8px', 
+        <div style={{
+          background: '#FEF2F2',
+          border: '1px solid #FECACA',
+          padding: '12px',
+          borderRadius: '8px',
           color: 'var(--accent-red)',
           fontSize: '0.875rem',
           marginBottom: '16px',
@@ -186,11 +186,11 @@ export default function PlateCamera({ onPlateSuggested, activeVehicles, settings
       {/* Camera View Area */}
       <div className="camera-container">
         {useRealCamera ? (
-          <video 
-            ref={videoRef} 
-            autoPlay 
-            playsInline 
-            muted 
+          <video
+            ref={videoRef}
+            autoPlay
+            playsInline
+            muted
             className="webcam-feed"
           />
         ) : (
@@ -206,10 +206,6 @@ export default function PlateCamera({ onPlateSuggested, activeVehicles, settings
         )}
 
         <div className="camera-overlay">
-          <div className="camera-status-tag" style={{ display: 'flex', alignItems: 'center', gap: '0.35rem' }}>
-            <span className="status-dot"></span>
-            <span>{useRealCamera ? (ocrStatus === 'scanning' ? 'IA ESCANEANDO...' : 'CÁMARA VIVO') : 'APAGADO'}</span>
-          </div>
           {useRealCamera && (
             <div style={{ position: 'absolute', top: 10, right: 10, background: 'rgba(0,0,0,0.6)', padding: '0.25rem 0.5rem', borderRadius: '4px', display: 'flex', alignItems: 'center', gap: '0.25rem', fontSize: '0.7rem', color: '#10B981' }}>
               <BrainCircuit style={{ width: 12, height: 12 }} /> OCR ACTIVO
@@ -217,7 +213,7 @@ export default function PlateCamera({ onPlateSuggested, activeVehicles, settings
           )}
         </div>
       </div>
-      
+
       {/* Hidden Canvas for OCR Frame Extraction */}
       <canvas ref={canvasRef} style={{ display: 'none' }} />
     </div>
