@@ -383,6 +383,7 @@ export default function App() {
                   onSelectSlot={setSelectedSlotId}
                   selectedSlotId={selectedSlotId}
                   onViewCheckout={handleTriggerCheckout}
+                  isFullEditor={false}
                 />
               </div>
             )}
@@ -407,6 +408,7 @@ export default function App() {
             onSelectSlot={setSelectedSlotId}
             selectedSlotId={selectedSlotId}
             onViewCheckout={handleTriggerCheckout}
+            isFullEditor={true}
           />
         )}
 

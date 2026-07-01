@@ -77,8 +77,8 @@ export default function Dashboard({
       return;
     }
 
-    if (plate.length < 6 || plate.length > 7) {
-      setFormError('Formato de patente inválido. Debe tener 6 o 7 caracteres (ej: AAA123 o AA123BB).');
+    if (plate.length !== 3 && (plate.length < 6 || plate.length > 7)) {
+      setFormError('Formato de patente inválido. Ingrese 3 caracteres o la patente completa (6/7 caracteres).');
       return;
     }
 
@@ -117,8 +117,8 @@ export default function Dashboard({
 
   return (
     <div className="dashboard-layout">
-      {/* Left Column: Register entry form */}
-      <div className="glass-panel" style={{ position: 'sticky', top: '1rem' }}>
+      {/* Top Column: Register entry form */}
+      <div className="glass-panel">
         <h2 className="form-title">
           <Plus style={{ color: 'var(--accent-blue)', width: 22, height: 22 }} />
           Registrar Ingreso

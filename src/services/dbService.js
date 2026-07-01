@@ -305,6 +305,51 @@ export const dbService = {
     };
   },
 
+  // --- MAP LAYOUT (EDITOR VISUAL) ---
+  getMapLayout() {
+    return getLS('parking_map_layout', {
+      floors: [
+        { id: 'pb', name: 'Planta Baja', order: 0, elements: [] }
+      ],
+      activeFloorId: 'pb',
+      gridSize: 10,
+      showGrid: true,
+      snapEnabled: true
+    });
+  },
+
+  saveMapLayout(layout) {
+    setLS('parking_map_layout', layout);
+    this.syncSlotsFromLayout(layout);
+    return layout;
+  },
+
+  saveMapCamera(camera) {
+    const layout = this.getMapLayout();
+    layout.camera = camera;
+    setLS('parking_map_layout', layout);
+  },
+
+  syncSlotsFromLayout(layout) {
+    const slots = [];
+    for (const floor of layout.floors) {
+      for (const el of floor.elements) {
+        if (el.type === 'slot') {
+          slots.push({
+            id: el.name || el.id,
+            name: el.name || el.id,
+            occupiedBy: el.occupiedBy || null,
+            vehicleType: el.vehicleType || null,
+            x: el.x,
+            y: el.y,
+            floorId: floor.id
+          });
+        }
+      }
+    }
+    this.saveSlots(slots);
+  },
+
   // --- SEED/RESET DB ---
   resetAll() {
     localStorage.removeItem('parking_settings');
@@ -312,6 +357,7 @@ export const dbService = {
     localStorage.removeItem('parking_slots');
     localStorage.removeItem('parking_history');
     localStorage.removeItem('parking_subscribers');
+    localStorage.removeItem('parking_map_layout');
     return { success: true };
   }
 };
