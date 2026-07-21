@@ -368,7 +368,7 @@ export default function TariffSettings({ settings, onSaveSettings }) {
                   <Plus style={{ width: 16, height: 16, color: 'var(--accent-blue)' }} />
                   Crear Nuevo Tipo de Vehículo
                 </h3>
-                <div style={{ display: 'grid', gridTemplateColumns: '1fr 150px auto', gap: '1rem', alignItems: 'end' }}>
+                <div style={{ display: 'grid', gridTemplateColumns: '1fr 150px auto', gap: '1rem', alignItems: 'end', flexWrap: 'wrap' }} className="vehicle-form-grid">
                   <div className="form-group" style={{ marginBottom: 0 }}>
                     <label className="form-label">Nombre del Vehículo</label>
                     <input 

@@ -5,45 +5,7 @@
  */
 
 // Default settings
-const DEFAULT_SETTINGS = {
-  general: {
-    useMap: false,
-    useCamera: false,
-    useSubscribers: false,
-    ocrIntervalSeconds: 2,
-    toleranceMinutes: 10,
-    billingType: 'fraction', // 'fraction' | 'hourly'
-    fractionMinutes: 15,
-    currency: 'ARS',
-    capacity: 50 // Max capacity of the parking lot
-  },
-  ticket: {
-    businessName: 'ESTACIONAMIENTO AR',
-    address: 'CABA, ARGENTINA',
-    phone: 'TEL: 011 4455-6677'
-  },
-  rates: {
-    commercial: {
-      active: false,
-      peakStart: '08:00',
-      peakEnd: '20:00',
-      peakMultiplier: 1.5,
-      offPeakMultiplier: 1.0
-    },
-    dynamic: {
-      active: false,
-      occupancyThresholdHigh: 80,
-      occupancyThresholdLow: 30,
-      multiplierHigh: 1.4,
-      multiplierLow: 0.8
-    }
-  },
-  vehicleTypes: [
-    { id: 'auto', name: 'Auto', hourlyRate: 1200, isDefault: true },
-    { id: 'moto', name: 'Moto', hourlyRate: 600, isDefault: true },
-    { id: 'camioneta', name: 'Camioneta/SUV', hourlyRate: 1800, isDefault: true }
-  ]
-};
+const DEFAULT_SETTINGS = {"general":{"useMap":true,"useCamera":false,"useSubscribers":false,"ocrIntervalSeconds":2,"toleranceMinutes":0,"billingType":"hourly","fractionMinutes":15,"currency":"ARS","capacity":50},"ticket":{"businessName":"ESTACIONAMIENTO AR","address":"CABA, ARGENTINA","phone":"TEL: 011 4455-6677"},"rates":{"commercial":{"active":false,"peakStart":"08:00","peakEnd":"20:00","peakMultiplier":1.5,"offPeakMultiplier":1},"dynamic":{"active":false,"occupancyThresholdHigh":80,"occupancyThresholdLow":30,"multiplierHigh":1.4,"multiplierLow":0.8}},"vehicleTypes":[{"id":"auto","name":"Auto","hourlyRate":3000,"isDefault":true},{"id":"moto","name":"Moto","hourlyRate":1500,"isDefault":true},{"id":"camioneta","name":"Camioneta/SUV","hourlyRate":3500,"isDefault":true}]};
 
 // Default map layout (15 sample slots)
 const DEFAULT_SLOTS = Array.from({ length: 20 }, (_, i) => {
@@ -204,7 +166,34 @@ export const dbService = {
 
   // --- PARKING SLOTS (MAP) ---
   getSlots() {
-    return getLS('parking_slots', DEFAULT_SLOTS);
+    const cached = localStorage.getItem('parking_slots');
+    if (cached) {
+      try {
+        return JSON.parse(cached);
+      } catch (e) {
+        console.error('Error parsing parking_slots', e);
+      }
+    }
+    
+    // Fallback: build from map layout
+    const layout = this.getMapLayout();
+    const defaultSlots = [];
+    for (const floor of layout.floors) {
+      for (const el of floor.elements) {
+        if (el.type === 'slot') {
+          defaultSlots.push({
+            id: el.name || el.id,
+            name: el.name || el.id,
+            occupiedBy: el.occupiedBy || null,
+            vehicleType: el.vehicleType || null,
+            x: el.x,
+            y: el.y,
+            floorId: floor.id
+          });
+        }
+      }
+    }
+    return defaultSlots;
   },
 
   saveSlots(slots) {
@@ -308,13 +297,12 @@ export const dbService = {
   // --- MAP LAYOUT (EDITOR VISUAL) ---
   getMapLayout() {
     return getLS('parking_map_layout', {
-      floors: [
-        { id: 'pb', name: 'Planta Baja', order: 0, elements: [] }
-      ],
+      floors: [{"id":"pb","name":"Planta Baja","order":0,"elements":[{"id":"lpoblw1","type":"slot","subtype":"normal","x":150,"y":470,"width":45,"height":90,"rotation":-90,"name":"P1"},{"id":"1r0mloy","type":"slot","subtype":"normal","x":150,"y":410,"width":45,"height":90,"rotation":-90,"name":"P2"},{"id":"4kjrqvp","type":"slot","subtype":"normal","x":150,"y":350,"width":45,"height":90,"rotation":-90,"name":"P3"},{"id":"xu1tc45","type":"slot","subtype":"normal","x":150,"y":290,"width":45,"height":90,"rotation":-90,"name":"P4"},{"id":"6mn3xbq","type":"slot","subtype":"normal","x":150,"y":230,"width":45,"height":90,"rotation":-90,"name":"P5"},{"id":"8sh8d17","type":"slot","subtype":"normal","x":360,"y":470,"width":45,"height":90,"rotation":-90,"name":"P6"},{"id":"8p6ukvp","type":"slot","subtype":"normal","x":360,"y":410,"width":45,"height":90,"rotation":-90,"name":"P7"},{"id":"b4hnqse","type":"slot","subtype":"normal","x":360,"y":350,"width":45,"height":90,"rotation":-90,"name":"P8"},{"id":"2egpbv1","type":"slot","subtype":"normal","x":360,"y":290,"width":45,"height":90,"rotation":-90,"name":"P9"},{"id":"8cm781a","type":"slot","subtype":"normal","x":360,"y":230,"width":45,"height":90,"rotation":-90,"name":"P10"},{"id":"cki177e","type":"wall","subtype":null,"x":110,"y":490,"width":449,"height":10,"rotation":-90,"name":""},{"id":"hnx0ppt","type":"wall","subtype":null,"x":810,"y":50,"width":693,"height":10,"rotation":180,"name":""},{"id":"s807t8z","type":"slot","subtype":"normal","x":590,"y":180,"width":45,"height":90,"rotation":90,"name":"P11"},{"id":"ot58gd8","type":"slot","subtype":"normal","x":590,"y":240,"width":45,"height":90,"rotation":90,"name":"P12"},{"id":"4lvrmp0","type":"slot","subtype":"normal","x":590,"y":300,"width":45,"height":90,"rotation":90,"name":"P13"},{"id":"xam5njx","type":"slot","subtype":"normal","x":590,"y":360,"width":45,"height":90,"rotation":90,"name":"P14"},{"id":"bz7rbby","type":"slot","subtype":"normal","x":590,"y":420,"width":45,"height":90,"rotation":90,"name":"P15"},{"id":"2fyp6ol","type":"slot","subtype":"normal","x":700,"y":230,"width":45,"height":90,"rotation":-90,"name":"P16"},{"id":"p4pf93b","type":"slot","subtype":"normal","x":700,"y":290,"width":45,"height":90,"rotation":-90,"name":"P17"},{"id":"nocvgzw","type":"slot","subtype":"normal","x":700,"y":350,"width":45,"height":90,"rotation":-90,"name":"P18"},{"id":"bd9v2j7","type":"slot","subtype":"normal","x":700,"y":410,"width":45,"height":90,"rotation":-90,"name":"P19"},{"id":"ban8rwb","type":"slot","subtype":"normal","x":700,"y":470,"width":45,"height":90,"rotation":-90,"name":"P20"},{"id":"8h29d2y","type":"slot","subtype":"normal","x":150,"y":170,"width":45,"height":90,"rotation":-90,"name":"P21"},{"id":"n7xas09","type":"slot","subtype":"normal","x":150,"y":110,"width":45,"height":90,"rotation":-90,"name":"P22"},{"id":"9md8hag","type":"slot","subtype":"normal","x":700,"y":170,"width":45,"height":90,"rotation":-90,"name":"P23"},{"id":"rfxpr5i","type":"slot","subtype":"normal","x":700,"y":110,"width":45,"height":90,"rotation":-90,"name":"P24"},{"id":"l7hmplj","type":"wall","subtype":null,"x":800,"y":490,"width":444,"height":10,"rotation":-90,"name":""},{"id":"huuo0aq","type":"entry","subtype":null,"x":610,"y":480,"width":70,"height":12,"rotation":0,"name":"Entrada"},{"id":"al03eec","type":"exit","subtype":null,"x":270,"y":480,"width":70,"height":12,"rotation":0,"name":"Salida"},{"id":"u6jbeow","type":"wall","subtype":null,"x":360,"y":480,"width":232,"height":10,"rotation":0,"name":""},{"id":"3jmx0bh","type":"wall","subtype":null,"x":110,"y":480,"width":133,"height":10,"rotation":0,"name":""},{"id":"114c82p","type":"wall","subtype":null,"x":700,"y":480,"width":108,"height":10,"rotation":0,"name":""}]}],
       activeFloorId: 'pb',
       gridSize: 10,
       showGrid: true,
-      snapEnabled: true
+      snapEnabled: true,
+      camera: {"x":-69.38210285492522,"y":7.053459185758442,"zoom":0.5499999999999999}
     });
   },
 

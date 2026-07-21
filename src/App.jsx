@@ -286,15 +286,8 @@ export default function App() {
           </ul>
         </nav>
 
-        <div className="sidebar-footer">
-          <div style={{ width: 36, height: 36, borderRadius: '50%', background: '#EFF6FF', display: 'flex', alignItems: 'center', justify: 'center' }}>
-            <ShieldCheck style={{ color: 'var(--accent-blue)', width: 20, height: 20 }} />
-          </div>
-          <div className="user-info">
-            <span className="user-name">Encargado de Caja</span>
-            <span className="user-role">Turno Mañana/Tarde</span>
-            <span style={{ fontSize: '0.65rem', color: 'var(--text-muted)', marginTop: '0.25rem', display: 'block' }}>© Mara Studio</span>
-          </div>
+        <div className="sidebar-footer" style={{ justifyContent: 'center' }}>
+          <span style={{ fontSize: '0.75rem', color: 'var(--text-muted)' }}>© 2026 Mara Studio</span>
         </div>
       </aside>
 

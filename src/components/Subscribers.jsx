@@ -124,7 +124,7 @@ export default function Subscribers({ subscribers, onUpdate }) {
           <p style={{ color: 'var(--text-secondary)', fontSize: '0.85rem' }}>Gestiona clientes que abonan por mes adelantado.</p>
         </div>
         <div style={{ display: 'flex', gap: '16px', alignItems: 'center' }}>
-          <div className="input-wrapper search-bar" style={{ minWidth: '250px' }}>
+          <div className="input-wrapper search-bar" style={{ minWidth: 0 }}>
             <Search className="input-icon" style={{ width: 16, height: 16 }} />
             <input 
               type="text" 

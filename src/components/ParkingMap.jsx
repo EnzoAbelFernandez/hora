@@ -450,28 +450,55 @@ export default function ParkingMap({
 
       {/* Canvas + Properties Panel */}
       <div ref={containerRef} style={{ display: 'flex', flex: 1, overflow: 'hidden' }}>
-        <EditorCanvas
-          elements={isEditing ? activeElements : elementsWithOccupancy}
-          onUpdateElements={updateElements}
-          selectedIds={selectedIds}
-          onSelectionChange={setSelectedIds}
-          activeTool={activeTool}
-          onToolChange={setActiveTool}
-          zoom={zoom}
-          onZoomChange={setZoom}
-          stagePos={stagePos}
-          onStagePosChange={setStagePos}
-          showGrid={showGrid}
-          snapEnabled={snapEnabled}
-          gridSize={mapLayout.gridSize || DEFAULT_GRID_SIZE}
-          isEditing={isEditing}
-          activeVehicles={activeVehicles}
-          onViewCheckout={onViewCheckout}
-          onSelectSlot={onSelectSlot}
-          containerWidth={containerSize.width}
-          containerHeight={containerSize.height}
-          onElementRotated={(r) => lastRotationRef.current = r}
-        />
+        {window.innerWidth < 1024 ? (
+          <div style={{
+            flex: 1, 
+            display: 'flex', 
+            flexDirection: 'column',
+            alignItems: 'center', 
+            justifyContent: 'center', 
+            background: 'var(--bg-card-hover)', 
+            padding: '2rem',
+            textAlign: 'center',
+            color: 'var(--text-secondary)'
+          }}>
+            <svg width="48" height="48" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" style={{ opacity: 0.25, marginBottom: '1rem' }}>
+              <rect x="2" y="3" width="20" height="14" rx="2"/>
+              <path d="M8 21h8M12 17v4"/>
+              <circle cx="8.5" cy="10" r="2.5" fill="currentColor" stroke="none" opacity="0.4"/>
+              <path d="M6 14V8h3.5a2.5 2.5 0 0 1 0 5H6"/>
+            </svg>
+            <h3 style={{ fontSize: '1.2rem', fontWeight: 600, color: 'var(--text-primary)', marginBottom: '0.5rem' }}>
+              Vista no disponible
+            </h3>
+            <p style={{ maxWidth: 400 }}>
+              El mapa interactivo de plazas está optimizado para pantallas de computadora (PC). Por favor, utiliza un dispositivo con pantalla más grande para operar o editar el mapa.
+            </p>
+          </div>
+        ) : (
+          <EditorCanvas
+            elements={isEditing ? activeElements : elementsWithOccupancy}
+            onUpdateElements={updateElements}
+            selectedIds={selectedIds}
+            onSelectionChange={setSelectedIds}
+            activeTool={activeTool}
+            onToolChange={setActiveTool}
+            zoom={zoom}
+            onZoomChange={setZoom}
+            stagePos={stagePos}
+            onStagePosChange={setStagePos}
+            showGrid={showGrid}
+            snapEnabled={snapEnabled}
+            gridSize={mapLayout.gridSize || DEFAULT_GRID_SIZE}
+            isEditing={isEditing}
+            activeVehicles={activeVehicles}
+            onViewCheckout={onViewCheckout}
+            onSelectSlot={onSelectSlot}
+            containerWidth={containerSize.width}
+            containerHeight={containerSize.height}
+            onElementRotated={(r) => lastRotationRef.current = r}
+          />
+        )}
 
         {/* Properties Panel (edit mode only) */}
         {isEditing && isFullEditor && (
